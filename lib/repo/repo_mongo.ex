@@ -27,7 +27,7 @@ end
 
 defmodule MongoToPostgres.Mongo.Record do
     use Ecto.Model
-    
+
     @primary_key{:id, :string, autogenerate: false}
     schema "Record" do
         field :Note
@@ -38,14 +38,16 @@ end
 
 defmodule MongoToPostgres.Mongo.Migration do
     import Ecto.Query
+    import MongoToPostgres.Mongo.Repo
+
     alias MongoToPostgres.Mongo.User
     alias MongoToPostgres.Mongo.Repo
 
     def user_query do
-        query = from u in User,    
+        query = from u in User,
             select: u
-        
-        Repo.all(query)
+
+        MongoToPostgres.Mongo.Repo.all(query)
         |> Enum.reject(fn record -> Enum.count(record."Activities") == 0 end)
         |> Enum.map(fn user ->
             u = %MongoToPostgres.User{oauth_token: user.id, name: user."Name"}
@@ -73,9 +75,9 @@ defmodule MongoToPostgres.Mongo.Migration do
 
                             r = %MongoToPostgres.Record{activity_id: activity.id, note: rec."Note", date: rec."Date", duration: time}
                             MongoToPostgres.Repo.insert(r)
-                        end) 
+                        end)
                 end)
             end)
-        
+
     end
 end

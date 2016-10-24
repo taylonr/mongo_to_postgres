@@ -2,9 +2,9 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-import_config "#{Mix.env}.exs"
 config :mongo_to_postgres, ecto_repos: [MongoToPostgres.Repo, MongoToPostgres.Mongo.Repo]
 
+import_config "#{Mix.env}.exs"
     
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
