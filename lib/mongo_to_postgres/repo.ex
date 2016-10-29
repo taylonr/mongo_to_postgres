@@ -4,7 +4,7 @@ end
 
 defmodule MongoToPostgres.User do
   use Ecto.Model
-  
+
   schema "users" do
     field :oauth_token, :string
     field :name, :string
@@ -32,7 +32,7 @@ defmodule MongoToPostgres.Record do
   schema "records" do
     field :note, :string
     field :duration, :float
-    field :date, Ecto.DateTime
+    field :date, Ecto.Date
 
     field :activity_id, :integer
   end

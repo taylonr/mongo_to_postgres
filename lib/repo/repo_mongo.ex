@@ -32,7 +32,7 @@ defmodule MongoToPostgres.Mongo.Record do
     schema "Record" do
         field :Note
         field :Time
-        field :Date, Ecto.DateTime
+        field :Date, Ecto.Date
     end
 end
 
@@ -73,7 +73,8 @@ defmodule MongoToPostgres.Mongo.Migration do
                                 _ -> {time, _} = Float.parse(rec."Time")
                             end
 
-                            r = %MongoToPostgres.Record{activity_id: activity.id, note: rec."Note", date: rec."Date", duration: time}
+                            {:ok, date} = Ecto.Date.cast(rec."Date")
+                            r = %MongoToPostgres.Record{activity_id: activity.id, note: rec."Note", date: date, duration: time}
                             MongoToPostgres.Repo.insert(r)
                         end)
                 end)

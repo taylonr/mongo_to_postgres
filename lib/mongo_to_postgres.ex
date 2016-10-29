@@ -10,7 +10,8 @@ defmodule MongoToPostgres do
       # Define workers and child supervisors to be supervised
       # worker(Test.Worker, [arg1, arg2, arg3]),
       # supervisor(MongoToPostgres.Repo, []),
-      supervisor(MongoToPostgres.Mongo.Repo, [])
+      supervisor(MongoToPostgres.Mongo.Repo, []),
+      supervisor(MongoToPostgres.Repo, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
