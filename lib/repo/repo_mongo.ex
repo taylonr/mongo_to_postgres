@@ -32,7 +32,7 @@ defmodule MongoToPostgres.Mongo.Record do
     schema "Record" do
         field :Note
         field :Time
-        field :Date, Ecto.Date
+        field :Date, Ecto.DateTime
     end
 end
 
@@ -56,10 +56,12 @@ defmodule MongoToPostgres.Mongo.Migration do
 
             user."Activities"
             |> Enum.map(fn act ->
+                hours =
                     case act."Hours" do
-                        "" -> hours = 1.0
-                        nil -> hours = 1.0
-                        _ -> {hours, _} = Float.parse(act."Hours")
+                        "" -> 1.0
+                        nil -> 1.0
+                        _ -> {h, _} = Float.parse(act."Hours")
+                            h
                     end
 
                     a = %MongoToPostgres.Activity{user_id: newUser.id, name: act."Name", default_duration: hours}
@@ -67,13 +69,21 @@ defmodule MongoToPostgres.Mongo.Migration do
 
                     act."Records"
                     |> Enum.map(fn rec ->
+                        time =
                             case rec."Time" do
-                                "" -> time = 1.0
-                                nil -> time = 1.0
-                                _ -> {time, _} = Float.parse(rec."Time")
+                                "" -> 1.0
+                                nil -> 1.0
+                                _ -> {t, _} = Float.parse(rec."Time")
+                                    t
                             end
 
-                            {:ok, date} = Ecto.Date.cast(rec."Date")
+                        {:ok, date} =
+                            rec."Date"
+                            |> Ecto.DateTime.to_iso8601
+                            |> Elixir.Timex.Parse.DateTime.Parser.parse!("{ISO:Extended:Z}")
+                            |> Timex.Timezone.convert(Timex.Timezone.local())
+                            |> Ecto.Date.cast
+
                             r = %MongoToPostgres.Record{activity_id: activity.id, note: rec."Note", date: date, duration: time}
                             MongoToPostgres.Repo.insert(r)
                         end)

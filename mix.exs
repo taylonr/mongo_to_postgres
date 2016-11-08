@@ -14,7 +14,7 @@ defmodule MongoToPostgres.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :mongodb_ecto, :ecto]]
+    [applications: [:logger, :mongodb_ecto, :ecto, :timex]]
   end
 
   # Dependencies can be Hex packages:
@@ -29,6 +29,7 @@ defmodule MongoToPostgres.Mixfile do
   defp deps do
     [{:mongodb_ecto, "~> 0.1.4"},
       {:postgrex, "~> 0.9.1"},
-     {:ecto, "~> 1.0"}]
+      {:ecto, "~> 1.0"},
+      {:timex, "~> 3.1"}]
   end
 end
